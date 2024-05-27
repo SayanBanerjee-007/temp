@@ -62,5 +62,5 @@ P[3]: 2
 |P[3]   |6      |2      |20     |18     |12     |
 
 Average Turnaround Time: 12.000000
-Average Waiting Time: -1.#QNAN0
+Average Waiting Time: 5.333333
  */
