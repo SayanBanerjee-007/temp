@@ -1,0 +1,69 @@
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.STD_LOGIC_UNSIGNED.ALL;
+use IEEE.NUMERIC_STD.ALL;
+
+entity ALU is
+    Port ( A : in  STD_LOGIC_VECTOR (7 downto 0);
+           B : in  STD_LOGIC_VECTOR (7 downto 0);
+           ALU_set : in  STD_LOGIC_VECTOR (3 downto 0);
+           ALU_out: out  STD_LOGIC_VECTOR (7 downto 0);
+           carry_out: out STD_LOGIC);
+end ALU;
+architecture Behavioral of ALU is
+signal ALU_result: STD_LOGIC_VECTOR(7 downto 0);
+signal tmp: STD_LOGIC_VECTOR(8 downto 0);
+begin
+    process(A, B, ALU_set)
+    begin
+        case ALU_set is
+            when "0000" => ALU_result <= A + B;
+            when "0001" => ALU_result <= A - B;
+            when "0010" => ALU_result <= Std_logic_vector(to_unsigned((to_integer(unsigned(A)) * to_integer(unsigned(B))), 8));
+            when "0011" => ALU_result <= Std_logic_vector(to_unsigned((to_integer(unsigned(A)) / to_integer(unsigned(B))), 8));
+            when "0100" => ALU_result <= Std_logic_vector(unsigned(A) sll N);
+            when "0101" => ALU_result <= Std_logic_vector(unsigned(A) srl N);
+            when "0110" => ALU_result <= Std_logic_vector(unsigned(A) rol N);
+            when "0111" => ALU_result <= Std_logic_vector(unsigned(A) ror N);
+            when "1000" => ALU_result <= A and B;
+            when "1001" => ALU_result <= A or B;
+            when "1010" => ALU_result <= A xor B;
+            when "1011" => ALU_result <= nor A;
+            when "1100" => ALU_result <= A nand B;
+            when "1101" => ALU_result <= A xnor B;
+            when "1110" =>
+            if(A > B) then
+                ALU_result <= x"01";
+            else
+                ALU_result <= x"00";
+            end if;
+            when "1111" =>
+            if(A = B) then
+                ALU_result <= x"01";
+            else
+                ALU_result <= x"00";
+            end if;
+            when others => ALU_result <= A + B;
+        end case;
+    end process;
+    ALU_out <= ALU_result;
+    tmp <= ('0' & A) + ('0' & B);
+    carry_out <= tmp(8);
+end Behavioral;
+
+
+
+Truth Table:
+
+ALU_set (Binary)	    Operation	    Description	                            ALU_out (Hex)	         Carry_out
+0000	                Addition	    Add A and B	                              ALU_result	            -
+0001	                Subtraction	    Subtract B from A	                      ALU_result	            -
+0100	                Shift Left	    Shift A left by N bits	                  ALU_result	      Bit shifted out
+0101	                Shift Right	    Logical shift A right by N bits	          ALU_result	      Bit shifted out
+0110	                Rotate Left	    Rotate A left by N bits         	      ALU_result	      Bit rotated out
+0111	                Rotate Right    Rotate A right by N bits	              ALU_result	      Bit rotated out
+1000	                AND	Bitwise     AND of A and B	                          ALU_result	            -
+1001	                OR	Bitwise     OR of A and B	                          ALU_result	            -
+1010	                XOR	Bitwise     XOR of A and B	                          ALU_result	            -
+1110	                Greater than    If A > B, ALU_out = x"01", else x"00"	  x"01"	                    -
+1111	                Equal	        If A = B, ALU_out = x"01", else x"00"	  x"01"	                    -
