@@ -7,6 +7,7 @@ int main()
     int n;
     printf("Enter number of matrices: ");
     scanf("%d", &n);
+    n++;
     int *arr = (int *)malloc(sizeof(int) * n);
     printf("Enter the dimensions of matrices: ");
     for (int i = 0; i < n; i++)
